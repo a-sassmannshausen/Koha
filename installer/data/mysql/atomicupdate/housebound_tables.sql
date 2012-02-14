@@ -30,5 +30,12 @@ CREATE TABLE IF NOT EXISTS `housebound_instance` (
 insert into systempreferences (variable,value,options,explanation,type) values
 ('useHouseboundModule',1,'','If ON, use the Housebound module','YesNo');
 
+insert into systempreferences (variable,value,options,explanation,type) values
+('useHouseboundCheckPrevious',1,'','If ON, checks if Housebound patrons have previous issued items to be checked out',
+'YesNo');
+
 insert into categories (categorycode, description, enrolmentperiod, upperagelimit, dateofbirthrequired, category_type)
-values ('VOL','Housebound volunteer','99','999','1','A');
+values ('VOL','Housebound volunteer','99','999','1','A'),('HB','Housebound patron','99','999','1','A'),('DELIV','Housebound deliverer','99','999','1','A'),('CHO','Housebound chooser','99','999','1','A');
+
+insert into authorised_values (category, authorised_value, lib)
+values ('Day','Example_Day','Change Me In Authorised Values (Day)'), ('Frequency','Example_Freq','Change Me In Authorised Values (Frequency)');
