@@ -20,7 +20,7 @@ package C4::Housebound;
 use strict;
 use warnings;
 use C4::Context;
-use parent qw(Exporter);
+use base qw(Exporter);
 
 our $VERSION = 3.02;
 our @EXPORT  = qw(
@@ -66,10 +66,9 @@ sub GetHouseboundDetails {
     my ($borrowernumber) = @_;
     if ($borrowernumber) {
         my $dbh = C4::Context->dbh;
-        my $sth =
-          $dbh->prepare('select * from housebound where borrowernumber=?');
-        $sth->execute($borrowernumber);
-        return $sth->fetchrow_hashref;
+        return $dbh->selectrow_hashref(
+            'select * from housebound where borrowernumber=?',
+            {}, $borrowernumber );
     }
     return;
 }
@@ -135,12 +134,19 @@ sub GetCurrentHouseboundInstanceList {
     my ($borrowernumber) = @_;
     if ($borrowernumber) {
         my $dbh = C4::Context->dbh;
-        my $sth = $dbh->prepare(
-q|SELECT housebound_instance . * , concat( volunteer.firstname, ' ', volunteer.surname ) AS vol, concat(chooser.firstname, ' ', chooser.surname) as cho, concat(deliverer.firstname, ' ', deliverer.surname) as del FROM housebound_instance left JOIN borrowers volunteer ON volunteer.borrowernumber = housebound_instance.volunteer left join borrowers chooser on chooser.borrowernumber = housebound_instance.chooser left join borrowers deliverer on deliverer.borrowernumber = housebound_instance.deliverer where housebound_instance.borrowernumber=? order by housebound_instance.dmy desc|
-        );
-        $sth->execute($borrowernumber);
-        my $housebound_instances = $sth->fetchall_arrayref( {} );
-        return $housebound_instances;
+        my $sql =<<'END_SQL';
+SELECT housebound_instance . * , concat( volunteer.firstname, ' ', volunteer.surname ) AS vol,
+ concat(chooser.firstname, ' ', chooser.surname) as cho,
+ concat(deliverer.firstname, ' ', deliverer.surname) as del
+ FROM housebound_instance
+ left JOIN borrowers volunteer ON volunteer.borrowernumber = housebound_instance.volunteer
+ left join borrowers chooser on chooser.borrowernumber = housebound_instance.chooser
+ left join borrowers deliverer on deliverer.borrowernumber = housebound_instance.deliverer
+ where housebound_instance.borrowernumber=?
+ order by housebound_instance.dmy desc
+END_SQL
+          return $dbh->selectall_arrayref( $sql, { Slice => {} },
+            $borrowernumber );
     }
     return;
 }
@@ -149,33 +155,32 @@ sub GetVolunteerNameAndID {
     my ($borrowernumber) = @_;
     if ($borrowernumber) {
         my $dbh = C4::Context->dbh;
-        my $sth = $dbh->prepare(
-"select borrowernumber,title,firstname,surname from borrowers where borrowernumber=?"
+        return $dbh->selectrow_hashref(
+'select borrowernumber,title,firstname,surname from borrowers where borrowernumber=?',
+            {}, $borrowernumber
         );
-        $sth->execute($borrowernumber);
-        my $volunteer = $sth->fetchrow_hashref;
-        return $volunteer;
     }
     return;
 }
 
 sub GetVolunteerList {
     my $dbh = C4::Context->dbh;
-    my $sth = $dbh->prepare(
-q|SELECT borrowernumber as volbornumber, concat(title, ' ', firstname, ' ', surname) as fullname from borrowers where categorycode='VOL' order by surname, firstname asc|
-    );
-    $sth->execute();
-    return $sth->fetchall_arrayref( {} );
+    my $sql = <<'GVL_END';
+SELECT borrowernumber as volbornumber,
+ concat(title, ' ', firstname, ' ', surname) as fullname
+ from borrowers where categorycode='VOL'
+ order by surname, firstname asc
+GVL_END
+      return $dbh->selectall_arrayref( $sql, { Slice => {} } );
 }
 
 sub GetHouseboundInstanceDetails {
     my ($instanceid) = @_;
     if ($instanceid) {
         my $dbh = C4::Context->dbh;
-        my $sth =
-          $dbh->prepare('SELECT * from housebound_instance where instanceid=?');
-        $sth->execute($instanceid);
-        return $sth->fetchrow_hashref;
+        return $dbh->selectrow_hashref(
+            'SELECT * from housebound_instance where instanceid=?',
+            {}, $instanceid );
     }
 
     # return undef if no instanceid

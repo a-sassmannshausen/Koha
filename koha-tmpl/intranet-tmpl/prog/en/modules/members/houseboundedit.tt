@@ -20,7 +20,6 @@ function check_form_housebound()
             <div class="yui-b">
                 <h1>Edit housebound details for [% title %] [% firstname %] [% surname %] [% IF ( cardnumber ) %]([% cardnumber %])[% END %]</h1>
 
-                <!--<div><ul class="toolbar"><li><span class="yui-button yui-link-button"><span class="first-child"><a href="/cgi-bin/koha/members/housebound.pl?borrowernumber=[% borrowernumber %]">Cancel changes</a></span></span></li></ul></div>-->
                     <form id="editform" method="post" action="/cgi-bin/koha/members/houseboundedit.pl" name="form">
                         <input type="hidden" name="borrowernumber" value="[% borrowernumber %]" />
                         <input type="hidden" name="hbnumber" value="[% hbnumber %]" />
