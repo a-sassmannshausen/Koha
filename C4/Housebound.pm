@@ -34,6 +34,8 @@ our @EXPORT  = qw(
   DeleteHouseboundInstanceDetails
   GetVolunteerNameAndID
   GetVolunteerList
+  GetChooserList
+  GetDelivererList
   CheckPrevIssue
 );
 
@@ -164,14 +166,25 @@ sub GetVolunteerNameAndID {
 }
 
 sub GetVolunteerList {
+    return GetHouseboundList("VOL");
+}
+
+sub GetDelivererList {
+    return GetHouseboundList("DELIV");
+}
+
+sub GetChooserList {
+    return GetHouseboundList("CHO");
+}
+
+sub GetHouseboundList {
+    my ( $cat_code ) = @_;
     my $dbh = C4::Context->dbh;
-    my $sql = <<'GVL_END';
-SELECT borrowernumber as volbornumber,
+    my $sql = "SELECT borrowernumber as volbornumber,
  concat(title, ' ', firstname, ' ', surname) as fullname
- from borrowers where categorycode='VOL'
- order by surname, firstname asc
-GVL_END
-      return $dbh->selectall_arrayref( $sql, { Slice => {} } );
+ from borrowers where categorycode=?
+ order by surname, firstname asc";
+      return $dbh->selectall_arrayref( $sql, { Slice => {} }, $cat_code );
 }
 
 sub GetHouseboundInstanceDetails {
