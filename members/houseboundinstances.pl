@@ -101,23 +101,31 @@ my $selectedvolunteer = $instancedetails->{volunteer};
 my $selectedchooser   = $instancedetails->{chooser};
 my $selecteddeliverer = $instancedetails->{deliverer};
 
-foreach my $ivol ( @{$volunteerlist} ) {
-    $ivol->{selected} = 'selected'
-      if $ivol->{volbornumber} == $selectedvolunteer;
+if ($selectedvolunteer) {
+    foreach my $ivol ( @{$volunteerlist} ) {
+        $ivol->{selected} = 'selected'
+          if $ivol->{volbornumber} == $selectedvolunteer;
+    }
 }
-foreach my $icho ( @{$chooserlist} ) {
-    $icho->{selected} = 'selected'
-      if $icho->{volbornumber} == $selectedchooser;
+if ($selectedchooser) {
+    foreach my $icho ( @{$chooserlist} ) {
+        $icho->{selected} = 'selected'
+          if $icho->{volbornumber} == $selectedchooser;
+    }
 }
-foreach my $idel ( @{$delivererlist} ) {
-    $idel->{selected} = 'selected'
-      if $idel->{volbornumber} == $selecteddeliverer;
+if ($selecteddeliverer) {
+    foreach my $idel ( @{$delivererlist} ) {
+        $idel->{selected} = 'selected'
+          if $idel->{volbornumber} == $selecteddeliverer;
+    }
 }
-if ( $instancedetails->{time} eq 'am' ) {
-    $template->param( timeam => 1 );
-}
-if ( $instancedetails->{time} eq 'pm' ) {
-    $template->param( timepm => 1 );
+if ( $instancedetails->{time} ) {
+    if ( $instancedetails->{time} eq 'am' ) {
+        $template->param( timeam => 1 );
+    }
+    if ( $instancedetails->{time} eq 'pm' ) {
+        $template->param( timepm => 1 );
+    }
 }
 
 $template->param(
