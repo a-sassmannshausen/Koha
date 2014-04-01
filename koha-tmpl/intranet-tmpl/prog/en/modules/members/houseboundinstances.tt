@@ -1,7 +1,15 @@
+[% USE KohaDates %]
 [% INCLUDE 'doc-head-open.inc' %]
 <title>Koha Housebound - [% surname %], [% firstname %]</title>
 [% INCLUDE 'doc-head-close.inc' %]
+[% INCLUDE 'calendar.inc' %]
 <script type="text/javascript" language="javascript">
+//<![CDATA[
+    $(document).ready(function() {
+        $("#dmy").datepicker({ minDate: "-1D",
+                               dateFormat: "yy-mm-dd"
+                             })
+    });
 function check_form_housebound()
 {
     document.form.submit();
@@ -15,7 +23,6 @@ function cancelInstance()
     window.location="/cgi-bin/koha/members/housebound.pl?borrowernumber=[% borrowernumber %]";
 }
 </script>
-[% INCLUDE 'calendar.inc' %]
 </head>
 <body>
 [% INCLUDE 'header.inc' %]
@@ -42,17 +49,6 @@ function cancelInstance()
                         <li>
                             <label for="dmy">Date: </label>
                             <input type="text" id="dmy" name="dmy" size="20" value="[% dmy %]" />
-                            <img src="[% themelang %]/lib/calendar/cal.gif" id="dmy_button" alt="Show Calendar" />
-                            <script language="JavaScript" type="text/javascript">
-                                Calendar.setup(
-                                {
-                                    inputField : "dmy",
-                                    ifFormat : "[% DHTMLcalendar_dateformat %]",
-                                    ifFormat : "%Y-%m-%d",
-                                    button : "dmy_button"
-                                }
-                                );
-                            </script>
                         </li>
                         <li>
                             <label for="time">Time:</label>
