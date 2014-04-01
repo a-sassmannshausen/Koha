@@ -28,11 +28,7 @@ use C4::Koha;
 use C4::Branch;
 use C4::Housebound;
 
-use vars qw($debug);
-
-BEGIN {
-    $debug = $ENV{DEBUG} || 0;
-}
+our $debug = $ENV{DEBUG} || 0;
 
 my $input = CGI->new();
 
@@ -45,9 +41,10 @@ sub nl2br {
 my $dbh = C4::Context->dbh;
 
 my ( $template, $loggedinuser, $cookie ) = get_template_and_user(
-    {   template_name   => "members/housebound.tmpl",
+    {
+        template_name   => 'members/housebound.tmpl',
         query           => $input,
-        type            => "intranet",
+        type            => 'intranet',
         authnotrequired => 0,
         flagsrequired   => { borrowers => 1 },
         debug           => ($debug) ? 1 : 0,
@@ -57,41 +54,41 @@ my ( $template, $loggedinuser, $cookie ) = get_template_and_user(
 my $borrowernumber = $input->param('borrowernumber');
 
 my $borrowerdetails      = C4::Members::GetMemberDetails($borrowernumber);
-my $branchdetail         = GetBranchDetail( $borrowerdetails->{'branchcode'} );
+my $branchdetail         = GetBranchDetail( $borrowerdetails->{branchcode} );
 my $categorydetail       = GetMember( borrowernumber => $borrowernumber);
 my $housebound           = GetHouseboundDetails($borrowernumber);
 my $housebound_instances = GetCurrentHouseboundInstanceList($borrowernumber);
 
 $template->param(
-    surname        => $borrowerdetails->{'surname'},
-    firstname      => $borrowerdetails->{'firstname'},
-    cardnumber     => $borrowerdetails->{'cardnumber'},
-    borrowernumber => $borrowerdetails->{'borrowernumber'},
+    surname        => $borrowerdetails->{surname},
+    firstname      => $borrowerdetails->{firstname},
+    cardnumber     => $borrowerdetails->{cardnumber},
+    borrowernumber => $borrowerdetails->{borrowernumber},
     houseboundview => 'on',
-    address        => $borrowerdetails->{'address'},
-    address2       => $borrowerdetails->{'address2'},
-    city           => $borrowerdetails->{'city'},
-    phone          => $borrowerdetails->{'phone'},
-    phonepro       => $borrowerdetails->{'phonepro'},
-    mobile         => $borrowerdetails->{'mobile'},
-    email          => $borrowerdetails->{'email'},
-    emailpro       => $borrowerdetails->{'emailpro'},
-    categoryname   => $categorydetail->{'description'},
-    categorycode   => $borrowerdetails->{'categorycode'},
-    branch         => $borrowerdetails->{'branch'},
+    address        => $borrowerdetails->{address},
+    address2       => $borrowerdetails->{address2},
+    city           => $borrowerdetails->{city},
+    phone          => $borrowerdetails->{phone},
+    phonepro       => $borrowerdetails->{phonepro},
+    mobile         => $borrowerdetails->{mobile},
+    email          => $borrowerdetails->{email},
+    emailpro       => $borrowerdetails->{emailpro},
+    categoryname   => $categorydetail->{description},
+    categorycode   => $borrowerdetails->{categorycode},
+    branch         => $borrowerdetails->{branch},
     branchname     => $branchdetail->{branchname},
-    zipcode        => $borrowerdetails->{'zipcode'}
+    zipcode        => $borrowerdetails->{zipcode}
 );
 
 $template->param(
-    hbnumber     => $housebound->{'hbnumber'},
-    day          => $housebound->{'day'},
-    frequency    => $housebound->{'frequency'},
-    Itype_quant  => $housebound->{'Itype_quant'},
-    Item_subject => $housebound->{'Item_subject'},
-    Item_authors => $housebound->{'Item_authors'},
-    referral     => $housebound->{'referral'},
-    notes        => $housebound->{'notes'}
+    hbnumber     => $housebound->{hbnumber},
+    day          => $housebound->{day},
+    frequency    => $housebound->{frequency},
+    Itype_quant  => $housebound->{Itype_quant},
+    Item_subject => $housebound->{Item_subject},
+    Item_authors => $housebound->{Item_authors},
+    referral     => $housebound->{referral},
+    notes        => $housebound->{notes}
 );
 
 if ($housebound_instances) {
