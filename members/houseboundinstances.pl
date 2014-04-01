@@ -29,17 +29,20 @@ use C4::Branch;
 use C4::Housebound;
 use C4::Dates;
 
-our $debug = $ENV{DEBUG} || 0;
+use vars qw($debug);
+
+BEGIN {
+    $debug = $ENV{DEBUG} || 0;
+}
 
 my $input = CGI->new();
 
 my $dbh = C4::Context->dbh;
 
 my ( $template, $loggedinuser, $cookie ) = get_template_and_user(
-    {
-        template_name   => 'members/houseboundinstances.tmpl',
+    {   template_name   => "members/houseboundinstances.tmpl",
         query           => $input,
-        type            => 'intranet',
+        type            => "intranet",
         authnotrequired => 0,
         flagsrequired   => { borrowers => 1 },
         debug           => ($debug) ? 1 : 0,
@@ -49,16 +52,16 @@ my ( $template, $loggedinuser, $cookie ) = get_template_and_user(
 my $borrowernumber = $input->param('borrowernumber');
 
 my $op = $input->param('op');
-if ( $op eq 'add' ) {
-    $template->param( opadd => 1, op => 'addsubmit' );
+if ( $op eq "add" ) {
+    $template->param( opadd => 1, op => "addsubmit" );
 }
-if ( $op eq 'edit' ) {
-    $template->param( opedit => 1, op => 'editsubmit' );
+if ( $op eq "edit" ) {
+    $template->param( opedit => 1, op => "editsubmit" );
 }
-if ( $op eq 'del' ) {
-    $template->param( opdel => 1, op => 'delsubmit' );
+if ( $op eq "del" ) {
+    $template->param( opdel => 1, op => "delsubmit" );
 }
-if ( $op eq 'addsubmit' ) {
+if ( $op eq "addsubmit" ) {
     CreateHouseboundInstanceDetails(
         $input->param('hbnumber'),  $input->param('dmy'),
         $input->param('time'),      $input->param('borrowernumber'),
@@ -75,7 +78,7 @@ if ( $op eq "delsubmit" ) {
       "/cgi-bin/koha/members/housebound.pl?borrowernumber=$borrowernumber";
     print "Location: $url";
 }
-if ( $op eq 'editsubmit' ) {
+if ( $op eq "editsubmit" ) {
     UpdateHouseboundInstanceDetails(
         $input->param('instanceid'),     $input->param('hbnumber'),
         $input->param('dmy'),            $input->param('time'),
@@ -97,70 +100,70 @@ my $delivererlist     = GetDelivererList();
 my $delinstanceid     = $input->param('instanceid');
 my $instanceid        = $input->param('instanceid');
 my $instancedetails   = GetHouseboundInstanceDetails($instanceid);
-my $selectedvolunteer = $instancedetails->{volunteer};
-my $selectedchooser   = $instancedetails->{chooser};
-my $selecteddeliverer = $instancedetails->{deliverer};
+my $selectedvolunteer = $instancedetails->{'volunteer'};
+my $selectedchooser   = $instancedetails->{'chooser'};
+my $selecteddeliverer = $instancedetails->{'deliverer'};
 
-foreach my $ivol ( @{$volunteerlist} ) {
+foreach my $ivol (@$volunteerlist) {
     $ivol->{selected} = 'selected'
-      if $ivol->{volbornumber} == $selectedvolunteer;
+      if $ivol->{'volbornumber'} == $selectedvolunteer;
 }
-foreach my $icho ( @{$chooserlist} ) {
+foreach my $icho (@$chooserlist) {
     $icho->{selected} = 'selected'
-      if $icho->{volbornumber} == $selectedchooser;
+      if $icho->{'volbornumber'} == $selectedchooser;
 }
 foreach my $idel (@$delivererlist) {
     $idel->{selected} = 'selected'
-      if $idel->{volbornumber} == $selecteddeliverer;
+      if $idel->{'volbornumber'} == $selecteddeliverer;
 }
-if ( $instancedetails->{time} eq 'am' ) {
+if ( $instancedetails->{'time'} eq "am" ) {
     $template->param( timeam => 1 );
 }
-if ( $instancedetails->{time} eq 'pm' ) {
+if ( $instancedetails->{'time'} eq "pm" ) {
     $template->param( timepm => 1 );
 }
 
 $template->param(
-    surname        => $borrowerdetails->{surname},
-    firstname      => $borrowerdetails->{firstname},
-    cardnumber     => $borrowerdetails->{cardnumber},
-    borrowernumber => $borrowerdetails->{borrowernumber},
+    surname        => $borrowerdetails->{'surname'},
+    firstname      => $borrowerdetails->{'firstname'},
+    cardnumber     => $borrowerdetails->{'cardnumber'},
+    borrowernumber => $borrowerdetails->{'borrowernumber'},
     houseboundview => 'on',
-    address        => $borrowerdetails->{address},
-    address2       => $borrowerdetails->{address2},
-    city           => $borrowerdetails->{city},
-    phone          => $borrowerdetails->{phone},
-    phonepro       => $borrowerdetails->{phonepro},
-    mobile         => $borrowerdetails->{mobile},
-    email          => $borrowerdetails->{email},
-    emailpro       => $borrowerdetails->{emailpro},
-    categoryname   => $categorydetail->{description},
-    categorycode   => $borrowerdetails->{categorycode},
-    branch         => $borrowerdetails->{branch},
-    branchname     => $branchdetail->{branchname},
-    zipcode        => $borrowerdetails->{zipcode}
+    address        => $borrowerdetails->{'address'},
+    address2       => $borrowerdetails->{'address2'},
+    city           => $borrowerdetails->{'city'},
+    phone          => $borrowerdetails->{'phone'},
+    phonepro       => $borrowerdetails->{'phonepro'},
+    mobile         => $borrowerdetails->{'mobile'},
+    email          => $borrowerdetails->{'email'},
+    emailpro       => $borrowerdetails->{'emailpro'},
+    categoryname   => $categorydetail->{'description'},
+    categorycode   => $borrowerdetails->{'categorycode'},
+    branch         => $borrowerdetails->{'branch'},
+    branchname     => $branchdetail->{'branchname'},
+    zipcode        => $borrowerdetails->{'zipcode'}
 );
 
 $template->param(
-    hbnumber                 => $housebound->{hbnumber},
-    day                      => $housebound->{day},
-    frequency                => $housebound->{frequency},
-    Itype_quant              => $housebound->{Itype_quant},
-    Item_subject             => $housebound->{Item_subject},
-    Item_authors             => $housebound->{Item_authors},
-    referral                 => $housebound->{referral},
-    notes                    => $housebound->{notes},
+    hbnumber                 => $housebound->{'hbnumber'},
+    day                      => $housebound->{'day'},
+    frequency                => $housebound->{'frequency'},
+    Itype_quant              => $housebound->{'Itype_quant'},
+    Item_subject             => $housebound->{'Item_subject'},
+    Item_authors             => $housebound->{'Item_authors'},
+    referral                 => $housebound->{'referral'},
+    notes                    => $housebound->{'notes'},
     DHTMLcalendar_dateformat => C4::Dates->DHTMLcalendar(),
     volunteerlist            => $volunteerlist,
     chooserlist              => $chooserlist,
     delivererlist            => $delivererlist,
     delinstanceid            => $delinstanceid,
     instanceid               => $instanceid,
-    dmy                      => $instancedetails->{dmy},
-    time                     => $instancedetails->{time},
-    volunteer                => $instancedetails->{volunteer},
-    chooser                  => $instancedetails->{chooser},
-    deliverer                => $instancedetails->{deliverer}
+    dmy                      => $instancedetails->{'dmy'},
+    time                     => $instancedetails->{'time'},
+    volunteer                => $instancedetails->{'volunteer'},
+    chooser                  => $instancedetails->{'chooser'},
+    deliverer                => $instancedetails->{'deliverer'}
 );
 
 output_html_with_http_headers $input, $cookie, $template->output;

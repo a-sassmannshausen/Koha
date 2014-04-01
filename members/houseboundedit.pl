@@ -28,17 +28,20 @@ use C4::Koha;
 use C4::Branch;
 use C4::Housebound;
 
-our $debug = $ENV{DEBUG} || 0;
+use vars qw($debug);
+
+BEGIN {
+    $debug = $ENV{DEBUG} || 0;
+}
 
 my $input = CGI->new();
 
 my $dbh = C4::Context->dbh;
 
 my ( $template, $loggedinuser, $cookie ) = get_template_and_user(
-    {
-        template_name   => 'members/houseboundedit.tmpl',
+    {   template_name   => "members/houseboundedit.tmpl",
         query           => $input,
-        type            => 'intranet',
+        type            => "intranet",
         authnotrequired => 0,
         flagsrequired   => { borrowers => 1 },
         debug           => ($debug) ? 1 : 0,
@@ -47,7 +50,7 @@ my ( $template, $loggedinuser, $cookie ) = get_template_and_user(
 
 my $borrowernumber = $input->param('borrowernumber');
 my $op             = $input->param('op');
-if ( $op eq 'editsubmit' ) {
+if ( $op eq "editsubmit" ) {
     UpdateHouseboundDetails(
         $input->param('hbnumber'),     $input->param('borrowernumber'),
         $input->param('day'),          $input->param('frequency'),
@@ -59,7 +62,7 @@ if ( $op eq 'editsubmit' ) {
       "/cgi-bin/koha/members/housebound.pl?borrowernumber=$borrowernumber";
     print "Location: $url";
 }
-if ( $op eq 'addsubmit' ) {
+if ( $op eq "addsubmit" ) {
     CreateHouseboundDetails(
         $input->param('borrowernumber'), $input->param('day'),
         $input->param('frequency'),      $input->param('Itype_quant'),
@@ -70,77 +73,78 @@ if ( $op eq 'addsubmit' ) {
       "/cgi-bin/koha/members/housebound.pl?borrowernumber=$borrowernumber";
     print "Location: $url";
 }
-if ( $op eq 'edit' ) {
-    $template->param( opeditsubmit => 'editsubmit' );
+if ( $op eq "edit" ) {
+    $template->param( opeditsubmit => "editsubmit" );
 }
-if ( $op eq 'add' ) {
-    $template->param( opaddsubmit => 'addsubmit' );
+if ( $op eq "add" ) {
+    $template->param( opaddsubmit => "addsubmit" );
 }
 
 my $borrowerdetails = C4::Members::GetMemberDetails($borrowernumber);
-my $branchdetail    = GetBranchDetail( $borrowerdetails->{branchcode} );
+my $branchdetail    = GetBranchDetail( $borrowerdetails->{'branchcode'} );
 my $categorydetail  = GetMember( $borrowernumber, 'borrowernumber' );
 my $housebound      = GetHouseboundDetails($borrowernumber);
 
 $template->param(
-    surname        => $borrowerdetails->{surname},
-    firstname      => $borrowerdetails->{firstname},
-    cardnumber     => $borrowerdetails->{cardnumber},
-    borrowernumber => $borrowerdetails->{borrowernumber},
+    surname        => $borrowerdetails->{'surname'},
+    firstname      => $borrowerdetails->{'firstname'},
+    cardnumber     => $borrowerdetails->{'cardnumber'},
+    borrowernumber => $borrowerdetails->{'borrowernumber'},
     houseboundview => 'on',
-    address        => $borrowerdetails->{address},
-    address2       => $borrowerdetails->{address2},
-    city           => $borrowerdetails->{city},
-    phone          => $borrowerdetails->{phone},
-    phonepro       => $borrowerdetails->{phonepro},
-    mobile         => $borrowerdetails->{mobile},
-    email          => $borrowerdetails->{email},
-    emailpro       => $borrowerdetails->{emailpro},
-    categoryname   => $categorydetail->{description},
-    categorycode   => $borrowerdetails->{categorycode},
-    branch         => $borrowerdetails->{branch},
-    branchname     => $branchdetail->{branchname},
-    zipcode        => $borrowerdetails->{zipcode}
+    address        => $borrowerdetails->{'address'},
+    address2       => $borrowerdetails->{'address2'},
+    city           => $borrowerdetails->{'city'},
+    phone          => $borrowerdetails->{'phone'},
+    phonepro       => $borrowerdetails->{'phonepro'},
+    mobile         => $borrowerdetails->{'mobile'},
+    email          => $borrowerdetails->{'email'},
+    emailpro       => $borrowerdetails->{'emailpro'},
+    categoryname   => $categorydetail->{'description'},
+    categorycode   => $borrowerdetails->{'categorycode'},
+    branch         => $borrowerdetails->{'branch'},
+    branchname     => $branchdetail->{'branchname'},
+    zipcode        => $borrowerdetails->{'zipcode'}
 );
 
 $template->param(
-    hbnumber     => $housebound->{hbnumber},
-    day          => $housebound->{day},
-    frequency    => $housebound->{frequency},
-    Itype_quant  => $housebound->{Itype_quant},
-    Item_subject => $housebound->{Item_subject},
-    Item_authors => $housebound->{Item_authors},
-    referral     => $housebound->{referral},
-    notes        => $housebound->{notes}
+    hbnumber     => $housebound->{'hbnumber'},
+    day          => $housebound->{'day'},
+    frequency    => $housebound->{'frequency'},
+    Itype_quant  => $housebound->{'Itype_quant'},
+    Item_subject => $housebound->{'Item_subject'},
+    Item_authors => $housebound->{'Item_authors'},
+    referral     => $housebound->{'referral'},
+    notes        => $housebound->{'notes'}
 );
 
-if ( $housebound->{day} eq 'Sunday' ) {
+if ( $housebound->{'day'} eq "Sunday" ) {
     $template->param( dsun => 1 );
-}
-elsif ( $housebound->{day} eq 'Monday' ) {
+} elsif ( $housebound->{'day'} eq "Monday" ) {
     $template->param( dmon => 1 );
-}
-elsif ( $housebound->{day} eq 'Tuesday' ) {
+} elsif ( $housebound->{'day'} eq "Tuesday" ) {
     $template->param( dtue => 1 );
-}
-elsif ( $housebound->{day} eq 'Wednesday' ) {
+} elsif ( $housebound->{'day'} eq "Wednesday" ) {
     $template->param( dwed => 1 );
-}
-elsif ( $housebound->{day} eq 'Thursday' ) {
+} elsif ( $housebound->{'day'} eq "Thursday" ) {
     $template->param( dthu => 1 );
-}
-elsif ( $housebound->{day} eq 'Friday' ) {
+} elsif ( $housebound->{'day'} eq "Friday" ) {
     $template->param( dfri => 1 );
-}
-elsif ( $housebound->{day} eq 'Saturday' ) {
+} elsif ( $housebound->{'day'} eq "Saturday" ) {
     $template->param( dsat => 1 );
 }
 
-if ( $housebound->{frequency} eq 'Week 1/3' ) {
+if ( $housebound->{'frequency'} eq "Week 1/3" ) {
+    $template->param( wk13 => 1 );
+} elsif ( $housebound->{'frequency'} eq "Week 2/4" ) {
+    $template->param( wk24 => 1 );
+} elsif ( $housebound->{'frequency'} eq "Week 1" ) {
     $template->param( wk1 => 1 );
-}
-elsif ( $housebound->{frequency} eq 'Week 2/4' ) {
+} elsif ( $housebound->{'frequency'} eq "Week 2" ) {
     $template->param( wk2 => 1 );
+} elsif ( $housebound->{'frequency'} eq "Week 3" ) {
+    $template->param( wk3 => 1 );
+} elsif ( $housebound->{'frequency'} eq "Week 4" ) {
+    $template->param( wk4 => 1 );
 }
 
 output_html_with_http_headers $input, $cookie, $template->output;
