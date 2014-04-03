@@ -26,8 +26,14 @@ use C4::Output;
 use C4::Members;
 use C4::Koha;
 use C4::Branch;
-use C4::Housebound;
 use C4::Dates;
+use C4::Housebound qw( GetHouseboundDetails
+                       GetHouseboundInstanceDetails
+                       CreateHouseboundInstanceDetails
+                       DeleteHouseboundInstanceDetails
+                       UpdateHouseboundInstanceDetails
+                       GetVolunteerList GetChooserList
+                       GetDelivererList );
 
 our $debug = $ENV{DEBUG} || 0;
 

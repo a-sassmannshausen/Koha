@@ -23,7 +23,7 @@ use C4::Context;
 use base qw(Exporter);
 
 our $VERSION = 3.02;
-our @EXPORT  = qw(
+our @EXPORT_OK  = qw(
   GetHouseboundDetails
   CreateHouseboundDetails
   UpdateHouseboundDetails

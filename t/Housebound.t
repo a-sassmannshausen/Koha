@@ -9,6 +9,17 @@ use DBD::Mock;
 
 use_ok('C4::Housebound');
 
+use C4::Housebound qw( GetHouseboundDetails CreateHouseboundDetails
+                       UpdateHouseboundDetails
+                       GetCurrentHouseboundInstanceList
+                       GetHouseboundInstanceDetails
+                       UpdateHouseboundInstanceDetails
+                       CreateHouseboundInstanceDetails
+                       DeleteHouseboundInstanceDetails
+                       GetVolunteerNameAndID GetVolunteerList
+                       GetChooserList GetDelivererList CheckPrevIssue
+                       );
+
 # Setup mock db
 my $module_context = new Test::MockModule('C4::Context');
 $module_context->mock(
