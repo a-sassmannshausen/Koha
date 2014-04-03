@@ -41,7 +41,7 @@ our @EXPORT  = qw(
 
 =head1 NAME
 
-C4::Housebound - Perl Module containing functions for housebound patrons
+C4::Housebound - Koha housebound patrons module.
 
 =head1 SYNOPSIS
 
@@ -57,10 +57,10 @@ volunteers.
 
 =head2 GetHouseboundDetails
 
-  $housebound = GetHouseboundDetails($borrowernumber);
+  $housebound = GetHouseboundDetails( $borrowernumber );
 
 Return a hashref containing the housebound table's row associated with
-$BORROWERNUMBER;
+$BORROWERNUMBER or undef.
 
 =cut
 
@@ -75,11 +75,11 @@ sub GetHouseboundDetails {
     return;
 }
 
-=head2 GetHouseboundDetails
+=head2 CreateHouseboundDetails
 
-  GetHouseboundDetails( $borrowernumber, $day, $frequency,
-                        $Itype_quant, $Item_subject, $Item_authors,
-                        $referral, $notes );
+  CreateHouseboundDetails( $borrowernumber, $day, $frequency,
+                           $Itype_quant, $Item_subject, $Item_authors,
+                           $referral, $notes );
 
 Create a new entry in the housebound table containing our arguments.
 The return value is undef.
@@ -132,6 +132,15 @@ sub UpdateHouseboundDetails {
     return;
 }
 
+=head2 GetCurrentHouseboundInstanceList
+
+  $hb_instances = GetCurrentHouseboundInstanceList( $borrowernumber );
+
+Return an arrayref containing all Housebound_Instances associated with
+$BORROWERNUMBER, or undef.
+
+=cut
+
 sub GetCurrentHouseboundInstanceList {
     my ($borrowernumber) = @_;
     if ($borrowernumber) {
@@ -153,6 +162,15 @@ END_SQL
     return;
 }
 
+=head2 GetVolunteerNameAndID
+
+  $volunteer = GetVolunteerNameAndID( $borrowernumber );
+
+Return a hashref containing details of the volunteer identified by
+$BORROWERNUMBER, or undef.
+
+=cut
+
 sub GetVolunteerNameAndID {
     my ($borrowernumber) = @_;
     if ($borrowernumber) {
@@ -165,17 +183,53 @@ sub GetVolunteerNameAndID {
     return;
 }
 
+=head2 GetVolunteerList
+
+  $volunteers = GetVolunteerList();
+
+Return an arrayref containing borrowernumbers and names of all known
+volunteers, or undef.
+
+=cut
+
 sub GetVolunteerList {
     return GetHouseboundList("VOL");
 }
+
+=head2 GetDelivererList
+
+  $deliverers = GetDelivererList();
+
+Return an arrayref containing borrowernumbers and names of all known
+deliverers, or undef.
+
+=cut
 
 sub GetDelivererList {
     return GetHouseboundList("DELIV");
 }
 
+=head2 GetChooserList
+
+  $choosers = GetChooserList();
+
+Return an arrayref containing borrowernumbers and names of all known
+choosers, or undef.
+
+=cut
+
 sub GetChooserList {
     return GetHouseboundList("CHO");
 }
+
+=head2 GetHouseboundList
+
+  $patrons = GetHouseboundList( $brw_cat_code );
+
+Return an arrayref containing borrowernumbers and names of all
+borrowers with $BRW_CAT_CODE, or undef.
+
+=cut
 
 sub GetHouseboundList {
     my ( $cat_code ) = @_;
@@ -187,6 +241,15 @@ sub GetHouseboundList {
       return $dbh->selectall_arrayref( $sql, { Slice => {} }, $cat_code );
 }
 
+=head2 GetHouseboundInstanceDetails
+
+  $housebound = GetHouseboundInstanceDetails( $instance_id );
+
+Return a hashref containing all details of the housebound_instance
+associated with $INSTANCE_ID or undef.
+
+=cut
+
 sub GetHouseboundInstanceDetails {
     my ($instanceid) = @_;
     if ($instanceid) {
@@ -195,10 +258,19 @@ sub GetHouseboundInstanceDetails {
             'SELECT * from housebound_instance where instanceid=?',
             {}, $instanceid );
     }
-
-    # return undef if no instanceid
     return;
 }
+
+=head2 UpdateHouseboundInstanceDetails
+
+  UpdateHouseboundInstanceDetails( $instanceid, $hbnumber, $dmy,
+                                   $time, $borrowernumber, $volunteer,
+                                   $chooser, $deliverer );
+
+Update housebound_instance table's row matching $instanceid with our
+arguments. The return value is undef.
+
+=cut
 
 sub UpdateHouseboundInstanceDetails {
     my ( $instanceid, $hbnumber, $dmy, $time, $borrowernumber, $volunteer,
@@ -215,6 +287,17 @@ sub UpdateHouseboundInstanceDetails {
     return;
 }
 
+=head2 CreateHouseboundInstanceDetails
+
+  CreateHouseboundInstanceDetails( $hbnumber, $dmy, $time,
+                                   $borrowernumber, $volunteer,
+                                   $chooser, $deliverer );
+
+Create a new housebound_instance table row containing our
+arguments. The return value is undef.
+
+=cut
+
 sub CreateHouseboundInstanceDetails {
     my ( $hbnumber, $dmy, $time, $borrowernumber, $volunteer, $chooser,
         $deliverer )
@@ -230,6 +313,15 @@ sub CreateHouseboundInstanceDetails {
     return;
 }
 
+=head2 DeleteHouseboundInstanceDetails
+
+  DeleteHouseboundInstanceDetails( $instanceid );
+
+Delete the row from housebound_instance identified by
+$INSTANCEID. The return value is undef.
+
+=cut
+
 sub DeleteHouseboundInstanceDetails {
     my ($instanceid) = @_;
     if ($instanceid) {
@@ -240,6 +332,15 @@ sub DeleteHouseboundInstanceDetails {
     }
     return;
 }
+
+=head2 CheckPrevIssue
+
+  CheckPrevIssue( $borrowernumber, $biblionumber );
+
+Return 1 if $BIBLIONUMBER has previously been issued to
+$BORROWERNUMBER, 0 otherwise.
+
+=cut
 
 sub CheckPrevIssue {
     my ( $borrowernumber, $biblionumber ) = @_;
@@ -270,6 +371,6 @@ __END__
 =head1 AUTHOR
 
 Mark Gavillet
-Alex Sassmannshausen (documentation)
+Alex Sassmannshausen
 
 =cut
