@@ -81,14 +81,7 @@ $template->param(
 );
 
 $template->param(
-    hbnumber     => $housebound->{hbnumber},
-    day          => $housebound->{day},
-    frequency    => $housebound->{frequency},
-    Itype_quant  => $housebound->{Itype_quant},
-    Item_subject => $housebound->{Item_subject},
-    Item_authors => $housebound->{Item_authors},
-    referral     => $housebound->{referral},
-    notes        => $housebound->{notes}
+    housebound   => $housebound
 );
 
 if ($housebound_instances) {

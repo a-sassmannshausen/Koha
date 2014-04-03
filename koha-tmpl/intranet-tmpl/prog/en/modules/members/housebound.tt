@@ -1,3 +1,4 @@
+[% USE AuthorisedValues %]
 [% INCLUDE 'doc-head-open.inc' %]
 <title>Koha Housebound - [% surname %], [% firstname %]</title>
 [% INCLUDE 'doc-head-close.inc' %]
@@ -14,21 +15,29 @@
         <div id="yui-main">
             <div class="yui-b"
                 <h1>Housebound details for [% title %] [% firstname %] [% surname %] [% IF ( cardnumber ) %]([% cardnumber %])[% END %]</h1>
-                [% IF ( hbnumber ) %]
-                <div><ul class="toolbar"><li><span class="yui-button yui-link-button"><span class="first-child"><a href="/cgi-bin/koha/members/houseboundedit.pl?hbnumber=[% hbnumber %]&borrowernumber=[% borrowernumber %]&op=edit">Edit</a></span></span></li></ul></div>
+                [% IF ( housebound.hbnumber ) %]
+                <div><ul class="toolbar"><li><span class="yui-button yui-link-button"><span class="first-child"><a href="/cgi-bin/koha/members/houseboundedit.pl?hbnumber=[% housebound.hbnumber %]&borrowernumber=[% borrowernumber %]&op=edit">Edit</a></span></span></li></ul></div>
                 <div id="houseboundinfo" class="rows">
                     <ol>
-                        <li><span class="label">Delivery day:</span>[% day %]</li>
-                        <li><span class="label">Frequency:</span>[% frequency %]</li>
-                        <li><span class="label">Material:</span>[% Itype_quant %]</li>
-                        <li><span class="label">Subjects:</span>[% Item_subject %]</li>
-                        <li><span class="label">Authors:</span>[% Item_authors %]</li>
-                        <li><span class="label">Referral:</span>[% referral %]</li>
-                        <li><span class="label">Notes:</span>[% notes %]</li>
+                        <li>
+                            <span class="label">Delivery day:</span>
+                            [% AuthorisedValues.GetByCode( 'day', housebound.day, 0 )
+                               || housebound.day %]
+                        </li>
+                        <li>
+                            <span class="label">Frequency:</span>
+                            [% AuthorisedValues.GetByCode( 'frequency', housebound.frequency, 0 )
+                               || housebound.frequency %]
+                        </li>
+                        <li><span class="label">Material:</span>[% housebound.Itype_quant %]</li>
+                        <li><span class="label">Subjects:</span>[% housebound.Item_subject %]</li>
+                        <li><span class="label">Authors:</span>[% housebound.Item_authors %]</li>
+                        <li><span class="label">Referral:</span>[% housebound.referral %]</li>
+                        <li><span class="label">Notes:</span>[% housebound.notes %]</li>
                     </ol>
                     <br>
                     <div style="height:10px;clear:both;"></div><h1>Deliveries</h1>
-                        <div><ul class="toolbar"><li><span class="yui-button yui-link-button"><span class="first-child"><a href="/cgi-bin/koha/members/houseboundinstances.pl?op=add&hbnumber=[% hbnumber %]&borrowernumber=[% borrowernumber %]">Add a new delivery</a></span></span></li></ul></div>
+                        <div><ul class="toolbar"><li><span class="yui-button yui-link-button"><span class="first-child"><a href="/cgi-bin/koha/members/houseboundinstances.pl?op=add&hbnumber=[% housebound.hbnumber %]&borrowernumber=[% borrowernumber %]">Add a new delivery</a></span></span></li></ul></div>
                         <table border="0" width="100%" cellpadding="3" cellspacing="0">
                         <th><strong>ID</strong></th><th><strong>Date</strong></th><th><strong>Volunteer</strong></th><th><strong>Chooser</strong></th><th><strong>Deliverer</strong></th><th><strong>Actions</strong></th></tr>
                         [% FOREACH instance IN instanceloop %]
@@ -37,7 +46,7 @@
                         </table>
                 </div>
                 [% ELSE %]
-                <p>This patron does not currently have registered housebound details. To add these details <a href="/cgi-bin/koha/members/houseboundedit.pl?hnbnumber=[% hbnumber %]&borrowernumber=[% borrowernumber %]&op=add">click here</a>.</p>
+                <p>This patron does not currently have registered housebound details. To add these details <a href="/cgi-bin/koha/members/houseboundedit.pl?hnbnumber=[% housebound.hbnumber %]&borrowernumber=[% borrowernumber %]&op=add">click here</a>.</p>
                 [% END %]
             </div>
         </div>

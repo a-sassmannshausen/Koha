@@ -83,12 +83,12 @@ my $branchdetail    = GetBranchDetail( $borrowerdetails->{branchcode} );
 my $categorydetail  = GetMember( borrowernumber => $borrowernumber );
 my $housebound      = GetHouseboundDetails($borrowernumber);
 
+
 $template->param(
     surname        => $borrowerdetails->{surname},
     firstname      => $borrowerdetails->{firstname},
     cardnumber     => $borrowerdetails->{cardnumber},
     borrowernumber => $borrowerdetails->{borrowernumber},
-    houseboundview => 'on',
     address        => $borrowerdetails->{address},
     address2       => $borrowerdetails->{address2},
     city           => $borrowerdetails->{city},
@@ -105,44 +105,10 @@ $template->param(
 );
 
 $template->param(
-    hbnumber     => $housebound->{hbnumber},
-    day          => $housebound->{day},
-    frequency    => $housebound->{frequency},
-    Itype_quant  => $housebound->{Itype_quant},
-    Item_subject => $housebound->{Item_subject},
-    Item_authors => $housebound->{Item_authors},
-    referral     => $housebound->{referral},
-    notes        => $housebound->{notes}
+    housebound   => $housebound,
+    houseboundview => 'on',
+    days         => GetAuthorisedValues('day'),
+    frequencies  => GetAuthorisedValues('frequency'),
 );
-
-if ( $housebound->{day} eq 'Sunday' ) {
-    $template->param( dsun => 1 );
-} elsif ( $housebound->{day} eq 'Monday' ) {
-    $template->param( dmon => 1 );
-} elsif ( $housebound->{day} eq 'Tuesday' ) {
-    $template->param( dtue => 1 );
-} elsif ( $housebound->{day} eq 'Wednesday' ) {
-    $template->param( dwed => 1 );
-} elsif ( $housebound->{day} eq 'Thursday' ) {
-    $template->param( dthu => 1 );
-} elsif ( $housebound->{day} eq 'Friday' ) {
-    $template->param( dfri => 1 );
-} elsif ( $housebound->{day} eq 'Saturday' ) {
-    $template->param( dsat => 1 );
-}
-
-if ( $housebound->{frequency} eq 'Week 1/3' ) {
-    $template->param( wk13 => 1 );
-} elsif ( $housebound->{frequency} eq 'Week 2/4' ) {
-    $template->param( wk24 => 1 );
-} elsif ( $housebound->{frequency} eq 'Week 1' ) {
-    $template->param( wk1 => 1 );
-} elsif ( $housebound->{frequency} eq 'Week 2' ) {
-    $template->param( wk2 => 1 );
-} elsif ( $housebound->{frequency} eq 'Week 3' ) {
-    $template->param( wk3 => 1 );
-} elsif ( $housebound->{frequency} eq 'Week 4' ) {
-    $template->param( wk4 => 1 );
-}
 
 output_html_with_http_headers $input, $cookie, $template->output;

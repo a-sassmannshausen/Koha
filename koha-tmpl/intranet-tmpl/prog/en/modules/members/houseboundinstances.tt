@@ -13,7 +13,7 @@
     });
     function deleteInstance()
     {
-        window.location="/cgi-bin/koha/members/houseboundinstances.pl?op=delsubmit&borrowernumber=[% borrowernumber %]&instanceid=[% delinstanceid %]&hbnumber=[% hbnumber %]";
+        window.location="/cgi-bin/koha/members/houseboundinstances.pl?op=delsubmit&borrowernumber=[% borrowernumber %]&instanceid=[% delinstanceid %]&hbnumber=[% housebound.hbnumber %]";
     }
     function cancelInstance()
     {
@@ -34,7 +34,7 @@
                 <form name="form" id="instance_form" method="post" action="/cgi-bin/koha/members/houseboundinstances.pl">
                     <input type="hidden" name="op" value="[% op %]" />
                     <input type="hidden" name="borrowernumber" value="[% borrowernumber %]" />
-                    <input type="hidden" name="hbnumber" value="[% hbnumber %]" />
+                    <input type="hidden" name="hbnumber" value="[% housebound.hbnumber %]" />
                     <input type="hidden" name="instanceid" value="[% instanceid %]" />
                 [% IF ( opdel ) %]
                     <p>Are you sure you want to delete this delivery?</p>
@@ -45,22 +45,27 @@
                     <ol>
                         <li>
                             <label for="dmy">Date: </label>
-                            <input type="text" id="dmy" name="dmy" size="20" value="[% dmy %]" required/>
+                            <input type="text" id="dmy" name="dmy" size="20" value="[% instance.dmy %]" required/>
                         </li>
                         <li>
                             <label for="time">Time:</label>
                             <select id="time" name="time" required>
                                 <option value="">Select a time</option>
-                                <option value="am"[% IF ( timeam ) %] selected="selected"[% END %]>am</option>
-                                <option value="pm"[% IF ( timepm ) %] selected="selected"[% END %]>pm</option>
+                                <option value="am"[% IF ( instance.time == 'am' ) %] selected="selected"[% END %]>am</option>
+                                <option value="pm"[% IF ( instance.time == 'pm' ) %] selected="selected"[% END %]>pm</option>
                             </select>
                         </li>
                         <li>
                             <label for="volunteer">Chooser/Deliverer:</label>
                             <select id="volunteer" name="volunteer">
                                 <option value="">Select a chooser_deliverer</option>
-                                [% FOREACH volunteer IN volunteerlist %]
-                                    <option value="[% volunteer.volbornumber %]" [% volunteer.selected %]>[% volunteer.fullname %]</option>
+                                [% FOREACH vol IN volunteerlist %]
+                                    <option value="[% vol.volbornumber %]"
+                                    [% IF ( vol.volbornumber == instance.volunteer ) %]
+                                        selected="selected"
+                                    [% END %]>
+                                        [% vol.fullname %]
+                                    </option>
                                 [% END %]
                             </select>
                         </li>
@@ -69,7 +74,12 @@
                             <select id="chooser" name="chooser">
                                 <option value="">Select a chooser</option>
                                 [% FOREACH cho IN chooserlist %]
-                                    <option value="[% cho.volbornumber %]" [% cho.selected %]>[% cho.fullname %]</option>
+                                    <option value="[% cho.volbornumber %]"
+                                    [% IF ( cho.volbornumber == instance.chooser ) %]
+                                        selected="selected"
+                                    [% END %]>
+                                        [% cho.fullname %]
+                                    </option>
                                 [% END %]
                             </select>
                         </li>
@@ -78,7 +88,12 @@
                             <select id="deliverer" name="deliverer">
                                 <option value="">Select a deliverer</option>
                                 [% FOREACH del IN delivererlist %]
-                                    <option value="[% del.volbornumber %]" [% del.selected %]>[% del.fullname %]</option>
+                                    <option value="[% del.volbornumber %]"
+                                    [% IF ( del.volbornumber == instance.deliverer ) %]
+                                        selected="selected"
+                                    [% END %]>
+                                        [% del.fullname %]
+                                    </option>
                                 [% END %]
                             </select>
                         </li>
