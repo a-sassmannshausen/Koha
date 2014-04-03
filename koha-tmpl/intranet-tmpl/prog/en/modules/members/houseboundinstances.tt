@@ -9,19 +9,16 @@
         $("#dmy").datepicker({ minDate: "-1D",
                                dateFormat: "yy-mm-dd"
                              })
+        $("#instance_form").validate()
     });
-function check_form_housebound()
-{
-    document.form.submit();
-}
-function deleteInstance()
-{
-    window.location="/cgi-bin/koha/members/houseboundinstances.pl?op=delsubmit&borrowernumber=[% borrowernumber %]&instanceid=[% delinstanceid %]&hbnumber=[% hbnumber %]";
-}
-function cancelInstance()
-{
-    window.location="/cgi-bin/koha/members/housebound.pl?borrowernumber=[% borrowernumber %]";
-}
+    function deleteInstance()
+    {
+        window.location="/cgi-bin/koha/members/houseboundinstances.pl?op=delsubmit&borrowernumber=[% borrowernumber %]&instanceid=[% delinstanceid %]&hbnumber=[% hbnumber %]";
+    }
+    function cancelInstance()
+    {
+        window.location="/cgi-bin/koha/members/housebound.pl?borrowernumber=[% borrowernumber %]";
+    }
 </script>
 </head>
 <body>
@@ -48,11 +45,11 @@ function cancelInstance()
                     <ol>
                         <li>
                             <label for="dmy">Date: </label>
-                            <input type="text" id="dmy" name="dmy" size="20" value="[% dmy %]" />
+                            <input type="text" id="dmy" name="dmy" size="20" value="[% dmy %]" required/>
                         </li>
                         <li>
                             <label for="time">Time:</label>
-                            <select id="time" name="time">
+                            <select id="time" name="time" required>
                                 <option value="">Select a time</option>
                                 <option value="am"[% IF ( timeam ) %] selected="selected"[% END %]>am</option>
                                 <option value="pm"[% IF ( timepm ) %] selected="selected"[% END %]>pm</option>
@@ -89,7 +86,7 @@ function cancelInstance()
                     </ol>
                 </fieldset>
                 <fieldset class="action">
-                    <input type="submit" value="Save" onclick="return check_form_instance();" name="save">
+                    <input type="submit" value="Save" name="save">
                     <a class="cancel" href="/cgi-bin/koha/members/housebound.pl?borrowernumber=[% borrowernumber %]">Cancel</a>
                 </fieldset>
                 [% END %]

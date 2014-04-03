@@ -15,7 +15,6 @@
             <div class="yui-b"
                 <h1>Housebound details for [% title %] [% firstname %] [% surname %] [% IF ( cardnumber ) %]([% cardnumber %])[% END %]</h1>
                 [% IF ( hbnumber ) %]
-                <!--<div><p><a href="/cgi-bin/koha/members/houseboundedit.pl?hbnumber=[% hbnumber %]&borrowernumber=[% borrowernumber %]">Edit</a> housebound details for this patron.</p></div>-->
                 <div><ul class="toolbar"><li><span class="yui-button yui-link-button"><span class="first-child"><a href="/cgi-bin/koha/members/houseboundedit.pl?hbnumber=[% hbnumber %]&borrowernumber=[% borrowernumber %]&op=edit">Edit</a></span></span></li></ul></div>
                 <div id="houseboundinfo" class="rows">
                     <ol>
@@ -37,8 +36,6 @@
                         [% END %]
                         </table>
                 </div>
-                <!--<div><br><p><a href="/cgi-bin/koha/members/housebound.pl?op=edit&hbnumber=[% hbnumber %]&borrowernumber=[% borrowernumber %]">Edit</a> housebound details for this patron.</p></div>-->
-
                 [% ELSE %]
                 <p>This patron does not currently have registered housebound details. To add these details <a href="/cgi-bin/koha/members/houseboundedit.pl?hnbnumber=[% hbnumber %]&borrowernumber=[% borrowernumber %]&op=add">click here</a>.</p>
                 [% END %]

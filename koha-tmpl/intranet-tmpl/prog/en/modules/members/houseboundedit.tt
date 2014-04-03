@@ -2,10 +2,10 @@
 <title>Koha Housebound - [% surname %], [% firstname %]</title>
 [% INCLUDE 'doc-head-close.inc' %]
 <script type="text/javascript" language="javascript">
-function check_form_housebound()
-{
-    document.form.submit();
-}
+//<![CDATA[
+    $(document).ready(function() {
+        $("#editform").validate()
+    });
 </script>
 </head>
 <body>
@@ -29,7 +29,7 @@ function check_form_housebound()
                             <ol>
                                 <li>
                                     <label for="day">Delivery day:</label>
-                                    <select id="day" name="day">
+                                    <select id="day" name="day" required>
                                     <option value="">Select a day</option>
                                     <option value="Sunday"[% IF ( dsun ) %] selected="selected"[% END %]>Sunday</option>
                                     <option value="Monday"[% IF ( dmon ) %] selected="selected"[% END %]>Monday</option>
@@ -42,7 +42,7 @@ function check_form_housebound()
                                 </li>
                                 <li>
                                     <label for="frequency">Frequency:</label>
-                                    <select id="frequency" name="frequency">
+                                    <select id="frequency" name="frequency" required>
                                     <option value="">Select a frequency</option>
                                     <option value="Week 1/3"[% IF ( wk1 ) %] selected="selected"[% END %]>Week 1/3</option>
                                     <option value="Week 2/4"[% IF ( wk2 ) %] selected="selected"[% END %]>Week 2/4</option>
