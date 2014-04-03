@@ -29,8 +29,6 @@ use C4::Branch;
 use C4::Housebound qw( GetHouseboundDetails
                        GetCurrentHouseboundInstanceList );
 
-our $debug = $ENV{DEBUG} || 0;
-
 my $input = CGI->new();
 
 sub nl2br {
@@ -48,7 +46,7 @@ my ( $template, $loggedinuser, $cookie ) = get_template_and_user(
         type            => 'intranet',
         authnotrequired => 0,
         flagsrequired   => { borrowers => 1 },
-        debug           => ($debug) ? 1 : 0,
+        debug           => $ENV{DEBUG},
     }
 );
 
